@@ -21,13 +21,8 @@ a = np.array([1, 2, 3, 4, 5], np.float64)
 b = np.array(np.ones(5))
 # a = a.astype(np.float)
 
-x=[0,1]
-y=[0,1]
-plt.subplot(2, 1, 1)
-plt.plot(x)
-plt.subplot(2, 1, 2)
-plt.plot(y)
-plt.show()
+print(a)
+
 
 #
 # for itm in a:
