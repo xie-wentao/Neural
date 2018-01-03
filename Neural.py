@@ -23,6 +23,7 @@ loss = []
 
 out = []
 j = -1
+e = 0
 
 
 # RELU function: the none-linear function of the hidden layer 1, 2
@@ -114,11 +115,10 @@ b3_mtx = np.array(np.zeros(10), np.float64)
        4. Gradient decreasing.
 '''
 for count in range(0, EPOCH):
-    print('#epoch: ', count)
 
     for itr in range(0, ITERATION):
         if count == EPOCH / 2:
-            count = ITA / 10
+            ITA = ITA / 10
 
         delta_w1 = np.array(np.zeros((300, 784)))
         delta_w2 = np.array(np.zeros((100, 300)))
@@ -155,6 +155,9 @@ for count in range(0, EPOCH):
             delta_b2 += delta_h2
             delta_b1 += delta_h1
 
+            if itr == ITERATION - 1:
+                e += -np.log(out[j])
+
         # Gradient update
         w1_mtx -= (delta_w1 / BATCH_SIZE + LAMBDA * w1_mtx) * ITA
         w2_mtx -= (delta_w2 / BATCH_SIZE + LAMBDA * w2_mtx) * ITA
@@ -162,7 +165,7 @@ for count in range(0, EPOCH):
         b1_mtx -= delta_b1 / BATCH_SIZE * ITA
         b2_mtx -= delta_b2 / BATCH_SIZE * ITA
         b3_mtx -= delta_b3 / BATCH_SIZE * ITA
-    loss.append(-np.log(out[j]))
+    loss.append(e / BATCH_SIZE)
 
     # Testing the NN using other 1000 image data
     cnt = 0
@@ -184,11 +187,18 @@ for count in range(0, EPOCH):
         truth = test_labels[i]
         if result == truth:
             cnt = cnt + 1
-    print(float(cnt) / float(test_labels.size))
     accuracy.append(float(cnt) / float(test_labels.size))
 
-plt.subplot(2, 1, 1)
-plt.plot(accuracy)
-plt.subplot(2, 1, 2)
-plt.plot(loss)
-plt.show()
+t = []
+for itm in loss:
+    t.append(round(itm, 4))
+
+
+plt.figure(figsize=(12, 5))
+ax1 = plt.subplot(1, 1, 1)
+ax1.plot(accuracy)
+plt.xlabel('#iteration')
+plt.ylabel('Accuracy')
+plt.grid()
+plt.tight_layout()
+plt.savefig('figure.pdf', dbi=300)
